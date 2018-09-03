@@ -55,6 +55,7 @@ function processWords(words) {
             if ((compareWord.word !== word.word) &&
           (compareWord.length === word.length) &&
           (compareWord.uniq === word.uniq)) {
+                console.log('match found', word, compareWord);
                 friends++;
                 return true;
             }
