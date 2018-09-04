@@ -15,6 +15,9 @@ if (process.argv[2]) {
 }
 const debug = (process.argv[3] === 'debug') ? true: false;
 
+if (debug) {
+    console.time('Process all words');
+}
 /**
  * Main process.
  * 1. Makes a request to Google Drive Api to request the zipped wordlist file.
@@ -48,6 +51,10 @@ request({
                         wordUtils.log('Found ' + friends + ' words with at least 1 friend.');
 
                         zipfile.readEntry();
+
+                        if (debug) {
+                            console.timeEnd('Process all words');
+                        }
                     });
                 });
             });
