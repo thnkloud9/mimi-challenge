@@ -11,85 +11,53 @@ function processWords(words, debug = false) {
         return 0;
     }
 
-    var wordsArray = words.split(/\r\n|\r|\n/);
-    var wordMetaObjects = [];
-    var friends = 0;
+    let wordsArray = words.split(/\r\n|\r|\n/);
+    let wordMap = new Map();
+    let friends = 0;
 
     wordsArray.forEach((word) => {
-        let uniq = '';
-        for (var i = 0; i < word.length; i++) {
-            if (uniq.indexOf(word[i]) == -1) {
-                uniq += word[i];
+        if (word !== '') {
+            let normalizedWord = normalizeWord(word);
+            let wordFriends = 1;
+            if (wordMap.has(normalizedWord)) {
+                wordMap.set(normalizedWord, wordMap.get(normalizedWord) + 1);
+            } else {
+                wordMap.set(normalizedWord, wordFriends);
             }
         }
-        wordMetaObjects.push({
-            word: word,
-            normal: normalizeWord(word),
-            length: word.length,
-            uniq: parseInt(uniq.length)
-        });
     });
 
-    wordMetaObjects.forEach((word) => {
-        wordMetaObjects.some((compareWord) => {
-            if ((compareWord.word !== word.word) &&
-            (compareWord.length === word.length) &&
-            (compareWord.uniq === word.uniq) &&
-            (arraysEqual(compareWord.normal, word.normal))) {
-                if (debug) {
-                    console.log('match found', word, compareWord);
-                }
-                friends++;
-                return true;
-            }
-        });
+    wordMap.forEach((value) => {
+       if (value > 1) {
+           friends = friends + value;
+       }
     });
 
     return friends;
 }
 
 /**
- * Normalizes a word by replacing each letter with its first occurrance integer value.
+ * Normalizes a word by replacing each letter with its first occurrance integer value and a field separator.
+ * example: AABBCD becomes 0|0|2|2|4|5|
  *
  * @param {string} word string to normalize
  *
- * @return {array} normalized word
+ * @return {string} normalized word
  */
 function normalizeWord(word) {
     if (typeof word !== 'string') {
-        return [];
+        return '';
     }
 
-    var newWordArray = [];
+    let newWord = '';
 
     for(let x = 0, length = word.length; x < length; x++) {
         let firstLetterPosition = word.indexOf(word[x]);
-        newWordArray.push(firstLetterPosition);
+        newWord += firstLetterPosition + '|';
     }
 
-    return newWordArray;
+    return newWord;
 }
 
-/**
- * Checks if two arrays have indentical values.
- *
- * @param {array} arr1 first array
- * @param {array} arr1 first array
- *
- * @return {boolean} true only if all values are identical in both arrays
- */
-function arraysEqual(arr1, arr2) {
-    if ((arr1.constructor !== Array) || (arr2.constructor !== Array)) {
-        return false;
-    }
-    if(arr1.length !== arr2.length)
-        return false;
-    for(var i = arr1.length; i--;) {
-        if(arr1[i] !== arr2[i])
-            return false;
-    }
 
-    return true;
-}
-
-module.exports = { processWords, normalizeWord, arraysEqual };
+module.exports = { processWords, normalizeWord };

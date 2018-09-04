@@ -39,7 +39,7 @@ request({
             if (error) throw error;
             zipfile.readEntry();
             zipfile.on('entry', (entry) => {
-                var words = '';
+                let words = '';
                 zipfile.openReadStream(entry, (error, readStream) => {
                     if (error) throw error;
                     readStream.on('data', (data) => {
