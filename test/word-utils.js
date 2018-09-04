@@ -1,5 +1,6 @@
 const wordUtils = require("../word-utils");
 const assert = require('assert');
+const fs = require('fs');
 
 describe("wordUtils", () => {
     describe("processWords", () => {
@@ -13,10 +14,16 @@ describe("wordUtils", () => {
             words = 'LALALA\nXOXOXO\nGCGCGC\nHHHCCC\nBBBMMM\n\nEGONUH\n\nHHRGOE';
             assert.equal(wordUtils.processWords(words), 5);
         });
+        it("returns the correct number of friends for 10000 words.", () => {
+            fs.readFile('./test/words.txt', 'utf8', function(err, words) {
+                if (err) throw err;
+                assert.equal(wordUtils.processWords(words), 14);
+            });
+        });
         it("returns 0 if non-string type is passed", () => {
             words = {}
             assert.equal(wordUtils.processWords(words), 0);
-        })
+        });
     });
 
     describe("normalizeWord", () => {
