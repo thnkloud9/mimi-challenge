@@ -15,9 +15,11 @@ describe("wordUtils", () => {
             assert.equal(wordUtils.processWords(words), 5);
         });
         it("returns the correct number of friends for 10000 words.", () => {
+            console.time('Process Words Performance Test');
             fs.readFile('./test/words.txt', 'utf8', function(err, words) {
                 if (err) throw err;
                 assert.equal(wordUtils.processWords(words), 14);
+                console.timeEnd('Process Words Performance Test');
             });
         });
         it("returns 0 if non-string type is passed", () => {
