@@ -10,7 +10,7 @@ const wordUtils = require('./word-utils');
 if (process.argv[2]) {
     var googleApiKey = process.argv[2];
 } else {
-    wordUtils.log('Usage: node index.js [googleApiKey]');
+    console.log('Usage: node index.js [googleApiKey]');
     process.exit(1);
 }
 const debug = (process.argv[3] === 'debug') ? true: false;
@@ -30,7 +30,7 @@ request({
     encoding: null
 }, (error, response, body) => {
     if(error || response.statusCode !== 200) {
-        wordUtils.log('Failed to download file.  Response code: ' + response.statusCode + 'Error: ' + error);
+        console.log('Failed to download file.  Response code: ' + response.statusCode + 'Error: ' + error);
         return;
     }
 
@@ -46,9 +46,9 @@ request({
                         words += data;
                     });
                     readStream.on('end', () => {
-                        wordUtils.log('Found ' + words.split(/\r\n|\r|\n/).length + ' total words.');
+                        console.log('Found ' + words.split(/\r\n|\r|\n/).length + ' total words.');
                         let friends = wordUtils.processWords(words, debug);
-                        wordUtils.log('Found ' + friends + ' words with at least 1 friend.');
+                        console.log('Found ' + friends + ' words with at least 1 friend.');
 
                         zipfile.readEntry();
 
@@ -60,7 +60,7 @@ request({
             });
         });
     } catch (error) {
-        wordUtils.log('Failed to unzip file. Error: ' + error);
+        console.log('Failed to unzip file. Error: ' + error);
         process.exit(1);
     }
 

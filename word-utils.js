@@ -1,4 +1,3 @@
-const util = require('util');
 
 /**
  * Checks a string containing multiple words, separated by newline char, for friendly words in the same list.
@@ -33,12 +32,12 @@ function processWords(words, debug = false) {
 
     wordMetaObjects.forEach((word) => {
         wordMetaObjects.some((compareWord) => {
-        if ((compareWord.word !== word.word) &&
+            if ((compareWord.word !== word.word) &&
             (compareWord.length === word.length) &&
             (compareWord.uniq === word.uniq) &&
             (arraysEqual(compareWord.normal, word.normal))) {
                 if (debug) {
-                    log('match found', word, compareWord);
+                    console.log('match found', word, compareWord);
                 }
                 friends++;
                 return true;
@@ -47,7 +46,7 @@ function processWords(words, debug = false) {
     });
 
     return friends;
-};
+}
 
 /**
  * Normalizes a word by replacing each letter with its first occurrance integer value.
@@ -69,7 +68,7 @@ function normalizeWord(word) {
     }
 
     return newWordArray;
-};
+}
 
 /**
  * Checks if two arrays have indentical values.
@@ -91,17 +90,6 @@ function arraysEqual(arr1, arr2) {
     }
 
     return true;
-};
-
-/**
- * Prints a string to stdout
- *
- * @param {mixed} arguments variable number of arguments of mixed type
- *
- * @return {undefined}
- */
-function log() {
-    process.stdout.write(util.format.apply(this, arguments) + '\n');
 }
 
-module.exports = { processWords, normalizeWord, arraysEqual, log };
+module.exports = { processWords, normalizeWord, arraysEqual };
