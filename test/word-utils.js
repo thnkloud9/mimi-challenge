@@ -5,7 +5,7 @@ const fs = require('fs');
 describe('wordUtils', () => {
     describe('processWords', () => {
         it('returns the correct number of friends from a new-line-char separated word string', () => {
-            var words = 'LALALA\nXOXOXO';
+            let words = 'LALALA\nXOXOXO';
             assert.equal(wordUtils.processWords(words), 2);
 
             words = 'HHHCCC\nBBBMMM';
@@ -30,12 +30,12 @@ describe('wordUtils', () => {
 
     describe('normalizeWord', () => {
         it('replaces each letter in a string with its first position integer value and a field separator', () => {
-            var word = 'AABBAC';
-            var expectedResult = '0|0|2|2|0|5|';
+            let word = 'AABBAC';
+            let expectedResult = '0|0|2|2|0|5|';
             assert.deepEqual(wordUtils.normalizeWord(word), expectedResult);
         });
         it('returns an empty string if a non-string type is passed', () => {
-            var word = [];
+            let word = [];
             assert.deepEqual(wordUtils.normalizeWord(word), '');
 
         });
