@@ -4,12 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js AIzaSyCqtneeGqDwpeWJHEvm2daOBNrAmJOdNn0",
+    "debug": "node index.js AIzaSyCqtneeGqDwpeWJHEvm2daOBNrAmJOdNn0 debug",
+    "test": "./node_modules/.bin/mocha --reporter spec"
   },
   "keywords": [],
-  "author": "",
+  "author": "Mark Lewis",
   "license": "ISC",
   "dependencies": {
+    "mocha": "^5.2.0",
     "request": "^2.88.0",
     "yauzl": "^2.10.0"
   }
