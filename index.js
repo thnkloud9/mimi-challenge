@@ -3,33 +3,45 @@
 const request = require('request');
 const yauzl = require('yauzl');
 
+if (process.argv[2]) {
+    var googleApiKey = process.argv[2];
+} else {
+    process.stdout.write('Usage: node index.js [googleApiKey]')
+    process.exit(1);
+}
+
 request({
     method : 'GET',
-    url : 'https://www.googleapis.com/drive/v3/files/0By5aT61a8aD8WlVpWU9CSU9ubUU?alt=media&key=AIzaSyCqtneeGqDwpeWJHEvm2daOBNrAmJOdNn0',
+    url : 'https://www.googleapis.com/drive/v3/files/0By5aT61a8aD8WlVpWU9CSU9ubUU?alt=media&key=' + googleApiKey,
     encoding: null
 }, (error, response, body) => {
-    if(error ||  response.statusCode !== 200) {
+    if(error || response.statusCode !== 200) {
         process.stdout.write('Failed to download file.  Response code: ' + response.statusCode + 'Error: ' + error);
         return;
     }
 
-    yauzl.fromBuffer(body, {lazyEntries: true}, (err, zipfile) => {
-        if (err) throw err;
-        zipfile.readEntry();
-        zipfile.on('entry', (entry) => {
-            var word = '';
-            zipfile.openReadStream(entry, (err, readStream) => {
-                if (err) throw err;
-                readStream.on('data', (data) => {
-                    word += data;
-                });
-                readStream.on('end', () => {
-                    processWords(word);
-                    zipfile.readEntry();
+    try {
+        yauzl.fromBuffer(body, {lazyEntries: true}, (err, zipfile) => { if (err) throw err;
+            zipfile.readEntry();
+            zipfile.on('entry', (entry) => {
+                var word = '';
+                zipfile.openReadStream(entry, (err, readStream) => {
+                    if (err) throw err;
+                    readStream.on('data', (data) => {
+                        word += data;
+                    });
+                    readStream.on('end', () => {
+                        processWords(word);
+                        zipfile.readEntry();
+                    });
                 });
             });
         });
-    });
+    } catch (error) {
+        process.stdout.write('Failed to unzip file. Error: ' + error);
+        process.exit(1);
+    }
+
 });
 
 function processWords(words) {
@@ -55,10 +67,10 @@ function processWords(words) {
             if ((compareWord.word !== word.word) &&
           (compareWord.length === word.length) &&
           (compareWord.uniq === word.uniq)) {
-                let wordLetters = getLetterCount(word.word);
-                let compareWordLetters = getLetterCount(compareWord.word);
+                let normaledWord = normalizeWord(word.word);
+                let normaledCompareWord = normalizeWord(compareWord.word);
 
-                if (arraysEqual(Object.values(wordLetters), Object.values(compareWordLetters))) {
+                if (arraysEqual(normaledWord, normaledCompareWord)) {
                     console.log('match found', word, compareWord);
                     friends++;
                     return true;
@@ -71,22 +83,14 @@ function processWords(words) {
     process.stdout.write('Found ' + friends + ' words with at least 1 friend.  Out of a total of ' + words.length + ' words.');
 }
 
-function getLetterCount(word) {
-    var letters = new Object;
-
-    var count = 1;
+function normalizeWord(word) {
+    var newWordArray = [];
     for(let x = 0, length = word.length; x < length; x++) {
-        var letter = word.charAt(x);
-        var nextLetter = (x < (length-1)) ? word.charAt(x+1) : '';
-        if (letter === nextLetter) {
-           count++;
-        } else {
-            letters[x] = count;
-            count = 1;
-        }
+        let firstLetterPosition = word.indexOf(word[x]);
+        newWordArray.push(firstLetterPosition);
     }
 
-    return letters;
+    return newWordArray;
 }
 
 function arraysEqual(arr1, arr2) {
