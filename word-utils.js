@@ -3,6 +3,7 @@
  * Checks a string containing multiple words, separated by newline char, for friendly words in the same list.
  *
  * @param {string} words string for separated by newline char
+ * @param {boolean} debug set to true to print debug output
  *
  * @return {undefined}
  */
@@ -27,10 +28,14 @@ function processWords(words, debug = false) {
         }
     });
 
+    if (debug) {
+        console.log(wordMap);
+    }
+
     wordMap.forEach((value) => {
-       if (value > 1) {
-           friends = friends + value;
-       }
+        if (value > 1) {
+            friends += value;
+        }
     });
 
     return friends;

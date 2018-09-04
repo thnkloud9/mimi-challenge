@@ -13,7 +13,7 @@ if (process.argv[2]) {
     console.log('Usage: node index.js [googleApiKey]');
     process.exit(1);
 }
-const debug = (process.argv[3] === 'debug') ? true: false;
+const debug = (process.argv[3] === 'debug');
 
 if (debug) {
     console.time('Process all words');
@@ -31,7 +31,7 @@ request({
 }, (error, response, body) => {
     if(error || response.statusCode !== 200) {
         console.log('Failed to download file.  Response code: ' + response.statusCode + 'Error: ' + error);
-        return;
+        process.exit(1);
     }
 
     try {
